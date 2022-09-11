@@ -7,16 +7,20 @@ import java.util.Random;
 public class Harcos {
     private int eletero;
     private int pozicio;
-    private int sebzes;
+//    private int sebzes;
     private Random rnd=new Random();    
     
     public Harcos() {
-        this(10);
+        this(0);
     }
     
-    public Harcos(int eletero) {
+    public Harcos(int pozicio) {
+        this(pozicio, 10);
+    }
+    
+    public Harcos(int pozicio, int eletero){
+        this.pozicio=pozicio;
         this.eletero=eletero;
-        this.pozicio=0;
     }
 
     public int getEletero() {
@@ -28,12 +32,15 @@ public class Harcos {
     }
 
     public int getSebzes() {
-        return sebzes;
+        return rnd.nextInt(6)+1;
     }
 
-    public void setPozicio(int pozicio) {
-        this.pozicio = pozicio;
+    public void setPozicio() {
+        this.pozicio = rnd.nextInt(Palya.PALYA_HOSSZ);
     }
-    
+
+    public void setEletero(int eletero) {
+        this.eletero = eletero;
+    }
     
 }
