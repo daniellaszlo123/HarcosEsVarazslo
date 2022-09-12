@@ -5,6 +5,9 @@
  */
 package nezet;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import modell.Harcos;
 import modell.Palya;
 import modell.Varazslo;
@@ -18,20 +21,85 @@ public class HEsVGUI extends javax.swing.JFrame {
     /**
      * Creates new form HEsVGUI
      */
+    public static final String LEIRAS="Egy adott játéktérben mozoghat a Harcos és a Varázsló. "
+            + "Ha ugyanarra a mezőre lépnek, akkor harcolnak. Akár harcolnak, akár nem, minden "
+            + "körben változtatják a pozíciójukat. Ha ugyanoda léptek, tehát harcolnak, akkor mindkettő "
+            + "fél sebez a másikba. A játék addig tart, ameddig legalább az egyik játékos el nem veszíti "
+            + "az életerejét.";
+    
+    private final Icon HARCOS = new ImageIcon(getClass().getResource("/kepek/harcos80x75.jpg"));
+    private final Icon VARAZSLO = new ImageIcon(getClass().getResource("/kepek/varazslo80x75.jpg"));
+    private final Icon HARC = new ImageIcon(getClass().getResource("/kepek/harc80x75.jpg"));
+    private final Icon URES = new ImageIcon(getClass().getResource("/kepek/ures.jpg"));
     
     private Harcos h;
     private Varazslo v;
     private Palya p;
     
+    private JLabel[] lblMezok;
+    
     public HEsVGUI() {
         initComponents();
         
-        p=new Palya();
-        h=new Harcos();
-        v=new Varazslo();
+        this.lblMezok = new JLabel[]{lblMezo1, lblMezo2, lblMezo3};
+        this.p=new Palya();
+        this.h=new Harcos();
+        this.v=new Varazslo();
         
+        alaphelyzet();        
+        alapPoz();        
         
+        pack();
         
+    }
+    
+    private void alaphelyzet(){
+        btnUjra.setEnabled(false);
+        lblLeiras.setText("<html><p style='padding=10px'>"+LEIRAS+"</p></html>");
+        palyaTisztit();
+    }
+    
+    private void alapPoz(){
+        p.setMezo(h.getPozicio(), 'H');
+        p.setMezo(v.getPozicio(), 'V');
+        
+        lblMezok[h.getPozicio()].setIcon(HARCOS);
+        lblMezok[v.getPozicio()].setIcon(VARAZSLO);
+    }
+    
+    private void ujPoz() {
+        h.setPozicio();
+        v.setPozicio();
+        p.setMezo(h.getPozicio(), 'H');
+        p.setMezo(v.getPozicio(), 'V');
+        
+        lblMezok[h.getPozicio()].setIcon(HARCOS);
+        lblMezok[v.getPozicio()].setIcon(VARAZSLO);
+    }
+    
+    private void palyaTisztit() {
+        for (int i = 0; i < Palya.PALYA_HOSSZ; i++) {
+            lblMezok[i].setIcon(URES);
+        }
+    }
+
+    private void vanEHarc() {
+        if (h.getPozicio()==v.getPozicio()) {            
+            String visszaj="";
+            h.setEletero(h.getEletero()-v.getSebzes());
+            v.setEletero(v.getEletero()-h.getSebzes());
+            
+            lblMezok[h.getPozicio()].setIcon(HARC);
+            
+            visszaj+="<html>";
+            visszaj+="<h2>Harc!</h2>";
+            visszaj+="<p>Harcos vesztett: "+v.getSebzes()+" életerőt! Jelenlegi életereje: "+h.getEletero()+"<br>";
+            visszaj+="Varázsló vesztett: "+h.getSebzes()+" életerőt! Jelenlegi életereje: "+v.getEletero()+"<br></p>";
+            visszaj+="</html>";
+            lblVisszajelzes.setText(visszaj);
+        }else{
+            lblVisszajelzes.setText("<html><h2>Nincs harc!</h2></html>");
+        }
     }
 
     /**
@@ -43,18 +111,69 @@ public class HEsVGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        pnlContainer = new javax.swing.JPanel();
+        btnUjra = new javax.swing.JButton();
+        pnlLeiras = new javax.swing.JPanel();
+        lblLeiras = new javax.swing.JLabel();
+        pnlVisszajelzes = new javax.swing.JPanel();
+        lblVisszajelzes = new javax.swing.JLabel();
+        btnKovLep = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         lblMezo2 = new javax.swing.JLabel();
         lblMezo3 = new javax.swing.JLabel();
         lblMezo1 = new javax.swing.JLabel();
-        pnlVisszajelzes = new javax.swing.JPanel();
-        lblVisszajelzes = new javax.swing.JLabel();
-        btnUjra = new javax.swing.JButton();
-        pnlLeiras = new javax.swing.JPanel();
-        lblLeiras = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Harcos és Varázsló");
+
+        pnlContainer.setLayout(new java.awt.GridLayout());
+
+        btnUjra.setText("Újrakezdés");
+
+        pnlLeiras.setBorder(javax.swing.BorderFactory.createTitledBorder("Leírás"));
+
+        javax.swing.GroupLayout pnlLeirasLayout = new javax.swing.GroupLayout(pnlLeiras);
+        pnlLeiras.setLayout(pnlLeirasLayout);
+        pnlLeirasLayout.setHorizontalGroup(
+            pnlLeirasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlLeirasLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblLeiras, javax.swing.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        pnlLeirasLayout.setVerticalGroup(
+            pnlLeirasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlLeirasLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblLeiras, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        pnlVisszajelzes.setBorder(javax.swing.BorderFactory.createTitledBorder("Visszajelzés"));
+
+        javax.swing.GroupLayout pnlVisszajelzesLayout = new javax.swing.GroupLayout(pnlVisszajelzes);
+        pnlVisszajelzes.setLayout(pnlVisszajelzesLayout);
+        pnlVisszajelzesLayout.setHorizontalGroup(
+            pnlVisszajelzesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlVisszajelzesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblVisszajelzes, javax.swing.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        pnlVisszajelzesLayout.setVerticalGroup(
+            pnlVisszajelzesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlVisszajelzesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblVisszajelzes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        btnKovLep.setText("Következő lépés");
+        btnKovLep.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnKovLepActionPerformed(evt);
+            }
+        });
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("Mező"), "Mezők"));
 
@@ -63,11 +182,11 @@ public class HEsVGUI extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(166, Short.MAX_VALUE)
+                .addContainerGap()
                 .addComponent(lblMezo1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(84, 84, 84)
                 .addComponent(lblMezo2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
                 .addComponent(lblMezo3, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -82,84 +201,70 @@ public class HEsVGUI extends javax.swing.JFrame {
                 .addGap(21, 21, 21))
         );
 
-        pnlVisszajelzes.setBorder(javax.swing.BorderFactory.createTitledBorder("Visszajelzés"));
-
-        javax.swing.GroupLayout pnlVisszajelzesLayout = new javax.swing.GroupLayout(pnlVisszajelzes);
-        pnlVisszajelzes.setLayout(pnlVisszajelzesLayout);
-        pnlVisszajelzesLayout.setHorizontalGroup(
-            pnlVisszajelzesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlVisszajelzesLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblVisszajelzes, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        pnlVisszajelzesLayout.setVerticalGroup(
-            pnlVisszajelzesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlVisszajelzesLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblVisszajelzes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        btnUjra.setText("Újrakezdés");
-
-        pnlLeiras.setBorder(javax.swing.BorderFactory.createTitledBorder("Leírás"));
-
-        javax.swing.GroupLayout pnlLeirasLayout = new javax.swing.GroupLayout(pnlLeiras);
-        pnlLeiras.setLayout(pnlLeirasLayout);
-        pnlLeirasLayout.setHorizontalGroup(
-            pnlLeirasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlLeirasLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblLeiras, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        pnlLeirasLayout.setVerticalGroup(
-            pnlLeirasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlLeirasLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblLeiras, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(61, 61, 61)
-                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(228, 228, 228)
-                                .addComponent(btnUjra)))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(28, Short.MAX_VALUE)
-                        .addComponent(pnlLeiras, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30)
-                        .addComponent(pnlVisszajelzes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap()
+                .addComponent(pnlLeiras, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlVisszajelzes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                .addComponent(pnlContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(231, 231, 231)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnKovLep, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnUjra, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(18, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(pnlLeiras, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnlVisszajelzes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(pnlLeiras, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(pnlContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(pnlVisszajelzes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnUjra)
-                .addGap(38, 38, 38))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnUjra, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnKovLep, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(22, 22, 22))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnKovLepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKovLepActionPerformed
+        palyaTisztit();
+        ujPoz();
+        vanEHarc();
+        
+        if (h.getEletero()<=0 && v.getEletero()<=0) {
+            btnKovLep.setEnabled(false);
+            if (h.getEletero()>v.getEletero()) {
+                lblVisszajelzes.setText("<html><h2>Harcos nyert!</h2></html>");
+            }else if(v.getEletero()>h.getEletero()){
+                lblVisszajelzes.setText("<html><h2>Varázsló nyert!</h2></html>");
+            }else{
+                lblVisszajelzes.setText("<html><h2>Döntetlen!</h2></html>");
+            }
+        }
+    }//GEN-LAST:event_btnKovLepActionPerformed
 
     /**
      * @param args the command line arguments
@@ -193,6 +298,7 @@ public class HEsVGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnKovLep;
     private javax.swing.JButton btnUjra;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblLeiras;
@@ -200,6 +306,7 @@ public class HEsVGUI extends javax.swing.JFrame {
     private javax.swing.JLabel lblMezo2;
     private javax.swing.JLabel lblMezo3;
     private javax.swing.JLabel lblVisszajelzes;
+    private javax.swing.JPanel pnlContainer;
     private javax.swing.JPanel pnlLeiras;
     private javax.swing.JPanel pnlVisszajelzes;
     // End of variables declaration//GEN-END:variables
