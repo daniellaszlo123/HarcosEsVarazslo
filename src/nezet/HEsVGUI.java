@@ -41,13 +41,7 @@ public class HEsVGUI extends javax.swing.JFrame {
     public HEsVGUI() {
         initComponents();
         
-        this.lblMezok = new JLabel[]{lblMezo1, lblMezo2, lblMezo3};
-        this.p=new Palya();
-        this.h=new Harcos();
-        this.v=new Varazslo();
-        
-        alaphelyzet();        
-        alapPoz();        
+        init();      
         
         pack();
         
@@ -86,20 +80,33 @@ public class HEsVGUI extends javax.swing.JFrame {
     private void vanEHarc() {
         if (h.getPozicio()==v.getPozicio()) {            
             String visszaj="";
-            h.setEletero(h.getEletero()-v.getSebzes());
-            v.setEletero(v.getEletero()-h.getSebzes());
+            int vSebzes=v.getSebzes();
+            int hSebzes=h.getSebzes();
+            
+            h.setEletero(h.getEletero()-vSebzes);
+            v.setEletero(v.getEletero()-hSebzes);
             
             lblMezok[h.getPozicio()].setIcon(HARC);
             
             visszaj+="<html>";
             visszaj+="<h2>Harc!</h2>";
-            visszaj+="<p>Harcos vesztett: "+v.getSebzes()+" életerőt! Jelenlegi életereje: "+h.getEletero()+"<br>";
-            visszaj+="Varázsló vesztett: "+h.getSebzes()+" életerőt! Jelenlegi életereje: "+v.getEletero()+"<br></p>";
+            visszaj+="<p>Harcos vesztett: "+vSebzes+" életerőt! Jelenlegi életereje: "+h.getEletero()+"<br>";
+            visszaj+="Varázsló vesztett: "+hSebzes+" életerőt! Jelenlegi életereje: "+v.getEletero()+"<br></p>";
             visszaj+="</html>";
             lblVisszajelzes.setText(visszaj);
         }else{
             lblVisszajelzes.setText("<html><h2>Nincs harc!</h2></html>");
         }
+    }
+    
+    private void init(){
+        this.lblMezok = new JLabel[]{lblMezo1, lblMezo2, lblMezo3};
+        this.p=new Palya();
+        this.h=new Harcos();
+        this.v=new Varazslo();
+        
+        alaphelyzet();        
+        alapPoz();
     }
 
     /**
@@ -125,10 +132,16 @@ public class HEsVGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Harcos és Varázsló");
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         pnlContainer.setLayout(new java.awt.GridLayout());
 
         btnUjra.setText("Újrakezdés");
+        btnUjra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUjraActionPerformed(evt);
+            }
+        });
 
         pnlLeiras.setBorder(javax.swing.BorderFactory.createTitledBorder("Leírás"));
 
@@ -247,6 +260,7 @@ public class HEsVGUI extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnKovLepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKovLepActionPerformed
@@ -254,8 +268,9 @@ public class HEsVGUI extends javax.swing.JFrame {
         ujPoz();
         vanEHarc();
         
-        if (h.getEletero()<=0 && v.getEletero()<=0) {
+        if (h.getEletero()<=0 || v.getEletero()<=0) {
             btnKovLep.setEnabled(false);
+            btnUjra.setEnabled(true);
             if (h.getEletero()>v.getEletero()) {
                 lblVisszajelzes.setText("<html><h2>Harcos nyert!</h2></html>");
             }else if(v.getEletero()>h.getEletero()){
@@ -265,6 +280,12 @@ public class HEsVGUI extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_btnKovLepActionPerformed
+
+    private void btnUjraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUjraActionPerformed
+        init();
+        btnKovLep.setEnabled(true);
+        lblVisszajelzes.setText("");
+    }//GEN-LAST:event_btnUjraActionPerformed
 
     /**
      * @param args the command line arguments
